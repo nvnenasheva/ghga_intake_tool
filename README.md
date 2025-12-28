@@ -18,27 +18,59 @@ This prototype demonstrates how **early, automated validation steps** can reduce
 The tool performs the following checks:
 
 - **Metadata validation**  
-  Validates dataset metadata against a predefined JSON Schema to ensure completeness and consistency.
+  Validates sample metadata files against a JSON Schema using `jsonschema` (Draft 2020-12). Reports validation errors with specific field locations and messages.
 
 - **File integrity checks**  
-  Verifies the presence of data files listed in a manifest, checks file types, sizes, and optional checksums.
+  Verifies the presence of data files listed in the manifest, checks file sizes, and validates optional MD5 checksums. Detects missing files and checksum mismatches.
 
-- **QC artifact presence**  
-  Detects whether basic QC reports (e.g. FastQC summaries) are available and flags missing QC information.
+- **Readiness scoring**  
+  Calculates an operational readiness score based on:
+  - Metadata completeness (50% weight)
+  - File integrity (40% weight)
+  - QC placeholder (10% weight, reserved for future QC integration)
+  
+  The final status is `READY` if all checks pass and score ≥ 90, otherwise `NEEDS_FIX`.
 
-- **Readiness assessment**  
-  Produces a structured report highlighting errors, warnings, and an overall readiness score for data intake.
+- **Report generation**  
+  Produces both machine-readable (JSON) and human-readable (Markdown) reports with detailed validation results, error messages, and actionable recommendations.
 
 No real patient data is used. All examples rely on public or mock datasets.
 
 ## Inputs
-- JSON metadata files (one per sample or dataset)
-- A manifest file listing associated data files
-- Optional QC reports (e.g. FastQC outputs)
+
+### Manifest File (CSV)
+A CSV file with the following columns:
+- `sample_id`: Identifier for the sample
+- `file_path`: Relative path to the data file
+- `md5`: Optional MD5 checksum for file verification
+
+Example:
+```csv
+sample_id,file_path,md5
+sample_001,examples/data/sample_001_R1.fastq.gz,e99a18c428cb38d5f260853678922e03
+sample_002,examples/data/sample_002_R1.fastq.gz,
+```
+
+### Metadata Files (JSON)
+JSON files containing sample metadata, validated against the provided JSON Schema. One file per sample, named `{sample_id}.json` or using the `sample_id` field within the JSON.
+
+### JSON Schema
+A JSON Schema file defining the structure and validation rules for metadata files.
 
 ## Outputs
-- A machine-readable JSON report summarizing validation results
-- A human-readable summary highlighting issues and recommended actions
+
+The tool generates two report files:
+
+1. **JSON Report** (`report.json`): Machine-readable structured report containing:
+   - Validation results for each sample
+   - File integrity check results
+   - Overall readiness score and status
+   - Detailed error messages
+
+2. **Markdown Report** (`report.md`): Human-readable summary with:
+   - Executive summary (status, score, readiness)
+   - Per-sample validation details
+   - Actionable recommendations
 
 ## Design Principles
 - **Metadata-first approach**: data must be well-described before it can be shared.
@@ -55,14 +87,74 @@ This prototype is intended as a **demonstration project** for data stewardship a
 ## Status
 This is a minimal, evolving prototype. Additional validation steps and QC integrations can be added as needed.
 
-## How to use
-### Requiremets
+## Installation
+
+### Requirements
 ```bash
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
-### Check validation of metadata
+
+## Usage
+
+The tool is packaged as a CLI and can be run with a single command:
+
 ```bash
-python3 validate_metadata.py
+PYTHONPATH=src python -m ghga_intake \
+  --manifest examples/manifest.csv \
+  --metadata_dir examples/metadata \
+  --schema schemas/sample_metadata.schema.json \
+  --out outputs/report
+```
+
+### Command-line Arguments
+
+- `--manifest` (required): Path to the manifest CSV file listing data files
+- `--metadata_dir` (required): Directory containing JSON metadata files (one per sample)
+- `--schema` (required): Path to the JSON Schema file for metadata validation
+- `--out` (optional): Output prefix for reports (default: `outputs/report`). Generates both `.json` and `.md` files
+
+### Example
+
+Using the provided examples:
+
+```bash
+PYTHONPATH=src python -m ghga_intake \
+  --manifest examples/manifest.csv \
+  --metadata_dir examples/metadata \
+  --schema schemas/sample_metadata.schema.json
+```
+
+This will generate:
+- `outputs/report.json` - Machine-readable JSON report
+- `outputs/report.md` - Human-readable Markdown summary
+
+The tool will also print a summary to the console:
+```
+JSON report: /path/to/outputs/report.json
+Markdown report: /path/to/outputs/report.md
+Status: NEEDS_FIX | Score: 75.0
+Ready for intake: False
+```
+
+## Project Structure
+
+```
+ghga_intake_tool/
+├── src/
+│   └── ghga_intake/          # Main package
+│       ├── cli.py            # Command-line interface
+│       ├── validate_metadata.py  # Metadata validation
+│       ├── file_checks.py    # File integrity checks
+│       ├── report.py         # Report generation
+│       └── markdown_report.py # Markdown rendering
+├── examples/                 # Example data
+│   ├── manifest.csv          # File manifest
+│   ├── metadata/             # Sample metadata JSON files
+│   └── data/                 # Example data files
+├── schemas/                  # JSON Schema definitions
+│   └── sample_metadata.schema.json
+├── outputs/                  # Generated reports
+└── requirements.txt          # Python dependencies
 ```
