@@ -1,0 +1,21 @@
+{
+  "sample_id": "sample_001",
+  "project_id": "GHGA-DEMO-001",
+  "organism": "Homo sapiens",
+  "data_type": "WGS",
+  "platform": "Illumina",
+  "library_strategy": "WGS",
+  "consent": "controlled",
+  "files": [
+    {
+      "path": "examples/data/sample_001_R1.fastq.gz",
+      "file_type": "fastq",
+      "md5": ""
+    },
+    {
+      "path": "examples/data/sample_001_R2.fastq.gz",
+      "file_type": "fastq",
+      "md5": ""
+    }
+  ]
+}

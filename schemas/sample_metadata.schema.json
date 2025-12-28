@@ -1,0 +1,84 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "GHGA Intake Sample Metadata (MVP)",
+    "type": "object",
+    "additionalProperties": false,
+  
+    "required": [
+      "sample_id",
+      "project_id",
+      "organism",
+      "data_type",
+      "platform",
+      "consent",
+      "files"
+    ],
+  
+    "properties": {
+      "sample_id": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9_\\-]+$"
+      },
+  
+      "project_id": {
+        "type": "string",
+        "minLength": 1
+      },
+  
+      "organism": {
+        "type": "string",
+        "enum": ["Homo sapiens"]
+      },
+  
+      "data_type": {
+        "type": "string",
+        "enum": ["WGS", "WES", "RNA-seq"]
+      },
+  
+      "platform": {
+        "type": "string",
+        "enum": ["Illumina", "ONT", "PacBio"]
+      },
+  
+      "library_strategy": {
+        "type": "string",
+        "enum": ["WGS", "WES", "RNA-Seq"]
+      },
+  
+      "consent": {
+        "type": "string",
+        "enum": ["controlled", "open"]
+      },
+  
+      "files": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "$ref": "#/$defs/FileItem"
+        }
+      }
+    },
+  
+    "$defs": {
+      "FileItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "file_type"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "file_type": {
+            "type": "string",
+            "enum": ["fastq", "bam", "cram"]
+          },
+          "md5": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+  

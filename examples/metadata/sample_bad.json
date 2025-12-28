@@ -1,0 +1,15 @@
+{
+  "sample_id": "sample_bad",
+  "project_id": "GHGA-DEMO-001",
+  "organism": "Homo sapiens",
+  "data_type": "WGS",
+  "platform": "UnknownPlatform",
+  "consent": "controlled",
+  "files": [
+    {
+      "path": "examples/data/missing.fastq.gz",
+      "file_type": "fastq"
+    }
+  ]
+}
+

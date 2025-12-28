@@ -1,0 +1,4 @@
+sample_id,file_path,md5
+sample_001,examples/data/sample_001_R1.fastq.gz,e99a18c428cb38d5f260853678922e03
+sample_002,examples/data/sample_002_R1.fastq.gz,
+sample_bad,examples/data/missing.fastq.gz,
