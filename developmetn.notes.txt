@@ -110,3 +110,7 @@ so researchers can immediately see what blocks intake and how to fix it."
 
 "I added optional MD5 checksum validation to ensure file integrity during intake.
 If a checksum is provided, it’s verified; if not, the system reports a warning but does not block ingestion."
+
+Create pdf and html for presentation
+marp PRESENTATION.md --pdf --allow-local-files -o PRESENTATION.pdf 
+marp PRESENTATION.md --pdf --allow-local-files -o PRESENTATION.pdf 
