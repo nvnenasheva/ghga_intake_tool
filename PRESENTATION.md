@@ -126,7 +126,7 @@ The full implementation is available on:
 </div>
 
 <div class="footnote">
-Natalia Nenasheva — 12/01/2026
+Natalia Nenasheva - 12/01/2026
 </div>
 
 <!--  
@@ -276,4 +276,7 @@ This prototype reflects the core challenges of GHGA intake:
 clear communication with data providers, transparent decisions, and extensibility.
 
 While intentionally minimal, it demonstrates how structured checks, clear reporting, and policy-driven decisions can support a national genomics data infrastructure.
+
+# marp PRESENTATION.md --html --allow-local-files -o PRESENTATION.html
+# marp PRESENTATION.md --pdf --allow-local-files -o PRESENTATION.pdf 
 -->

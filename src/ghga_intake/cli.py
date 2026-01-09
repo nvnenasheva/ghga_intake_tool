@@ -23,14 +23,14 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    # Run checks
+    # run checks
     metadata_results = validate_metadata_dir(args.metadata_dir, args.schema)
     file_results = check_files_from_manifest(args.manifest)
 
-    # Build report
+    # build report
     report = build_report(metadata_results, file_results)
 
-    # Save outputs
+    # save outputs
     out_json = args.out.with_suffix(".json")
     out_md = args.out.with_suffix(".md")
 
@@ -38,7 +38,7 @@ def main(argv: list[str] | None = None) -> int:
     md = render_markdown(report)
     save_markdown(md, out_md)
 
-    # Console summary
+    # summary
     print("JSON report:", out_json.resolve())
     print("Markdown report:", out_md.resolve())
     print("Status:", report["summary"]["status"], "| Score:", report["summary"]["readiness_score"])
