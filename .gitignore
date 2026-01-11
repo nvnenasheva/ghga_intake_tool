@@ -1,9 +1,6 @@
 outputs/
 *.bam
 *.cram
-*.fastq
-*.fastq.gz
-*.fq.gz
 *.zip
 __pycache__/
 .venv/
